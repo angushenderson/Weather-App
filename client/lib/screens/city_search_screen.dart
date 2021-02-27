@@ -16,7 +16,6 @@ class _CitySearchScreenState extends State<CitySearchScreen> {
     if (text.length > 0) {
       try {
         var result = await fetchLocationsFromServer(text);
-        print(result.locations[0].name);
         setState(() {
           _locationSuggestions = result;
         });

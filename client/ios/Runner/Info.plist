@@ -43,5 +43,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
+	<array>
+    	<string>UIInterfaceOrientationPortrait</string>
+	</array>
 </dict>
 </plist>

@@ -15,7 +15,7 @@ else:
 response = requests.get(BASE + 'forecast/56.119/-3.9')
 if response.status_code == 200:
     json = response.json()
-    print(json['forecast']['current'])
+    print(len(json['forecast']['rain_hour']))
 else:
     print(response.status_code)
 

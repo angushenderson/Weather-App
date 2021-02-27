@@ -1,3 +1,5 @@
+import 'package:client/models/rain_graph.dart';
+
 class Forecast {
   double temperature; // Current temperature
   double feelsLike; // Temperature due to current wind conditions
@@ -6,6 +8,8 @@ class Forecast {
   String icon; // Icon code for current weather condition
   List<TwoDayForecast> twoDayForecast; // Forecast for next 2 days
   int dt; // DateTime of forecast fetch from server
+  List<RainGraphModel>
+      hourPrecipitation; // Precipitation minute by minute for the next hour
 
   Forecast({
     this.temperature,
@@ -15,6 +19,7 @@ class Forecast {
     this.icon,
     this.twoDayForecast,
     this.dt,
+    this.hourPrecipitation,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -37,6 +42,16 @@ class Forecast {
       }
     });
 
+    List<RainGraphModel> precipitation = [];
+    json['forecast']['rain_hour'].asMap().forEach((index, item) {
+      precipitation.add(
+        RainGraphModel(
+          precipitation: item['precipitation'].toDouble(),
+          dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+        ),
+      );
+    });
+
     return Forecast(
       temperature: json['forecast']['current']['main']['temp'].toDouble(),
       feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
@@ -45,6 +60,7 @@ class Forecast {
       icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
       twoDayForecast: twoDayForecast,
       dt: json['dt'],
+      hourPrecipitation: precipitation,
     );
   }
 }

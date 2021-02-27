@@ -1,12 +1,17 @@
-import 'package:client/server/forecast.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/home_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return MaterialApp(
       title: 'Weather App',
       debugShowCheckedModeBanner: false,
@@ -42,6 +47,12 @@ class MyApp extends StatelessWidget {
           headline3: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
             fontSize: 28.0,
+          ),
+          // CARD TEXT
+          headline4: TextStyle(
+            color: Colors.white,
+            fontSize: 28.0,
+            fontWeight: FontWeight.w500,
           ),
           // GREYISH SUBHEADING TEXT
           headline6: TextStyle(

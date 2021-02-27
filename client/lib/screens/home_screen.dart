@@ -5,6 +5,7 @@ import 'package:client/screens/air_quality_screen.dart';
 import 'package:client/screens/city_select_screen.dart';
 import 'package:client/services/startup.dart';
 import 'package:client/widgets/daily_temperature_scroller.dart';
+import 'package:client/widgets/precipitation_card.dart';
 import 'package:flutter/material.dart';
 import 'package:client/server/forecast.dart';
 
@@ -37,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
       var result = await fetchForecastFromServer(
           _locations.locations[locationIndex].lat,
           _locations.locations[locationIndex].lon);
-      print('Temperature: ' + result.temperature.toString());
       setState(() {
         _locations.locations[locationIndex].forecast = result;
       });
@@ -163,7 +163,6 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   void fetchForecast() async {
     try {
       var result = await fetchForecastFromServer(location.lat, location.lon);
-      print('Temperature: ' + result.temperature.toString());
       setState(() {
         forecast = result;
       });
@@ -183,11 +182,11 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   void initState() {
     super.initState();
     fetchForecast();
-    print('Building home screen');
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return forecast != null
         ? RefreshIndicator(
             backgroundColor: Theme.of(context).cardColor,
@@ -441,8 +440,9 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                 SizedBox(
                   height: 52,
                 ),
-
+                // Info widgets
                 DailyTemperatureScroller(forecast.twoDayForecast),
+                PrecipitationCard(forecast.hourPrecipitation),
               ],
             ),
           )
