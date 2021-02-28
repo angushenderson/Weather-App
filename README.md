@@ -1,6 +1,6 @@
 # Full Stack Weather App
 
-Full stack mobile weather app created with a Flutter front end and Python Flask backend, fetching forecast data from the OpenWeatherMap API (https://openweathermap.org/api).
+Full stack mobile weather app created with a Flutter front end and Python Flask backend, fetching forecast data from the OpenWeatherMap API (https://openweathermap.org/api) and air quality data from WeatherBit (https://www.weatherbit.io/api).
 
 ## Getting Started
 
