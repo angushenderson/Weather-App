@@ -15,14 +15,7 @@ Future<Locations> loadLocations() async {
   lon = position.longitude;
 
   // Get all stored locations
-  print('Fetching all locations');
   var locations = await getAllLocations();
-  print('Fetched locations');
-  print(locations.locations.length);
-  locations.locations.forEach((location) {
-    print(location.name);
-  });
-  print(locations.currentLocationIndex);
   locations.locations[locations.currentLocationIndex].lat = lat;
   locations.locations[locations.currentLocationIndex].lon = lon;
 

@@ -66,52 +66,55 @@ class _CitySelectScreenState extends State<CitySelectScreen> {
                   itemCount: locations.locations.length,
                   itemBuilder: (BuildContext context, int index) {
                     Location location = locations.locations[index];
-                    return Container(
-                      padding: EdgeInsets.all(16.0),
-                      decoration: index == 0
-                          ? BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  const Color.fromARGB(255, 252, 98, 228),
-                                  const Color.fromARGB(255, 50, 99, 242),
-                                ],
-                                begin: FractionalOffset(0.0, 0.0),
-                                end: FractionalOffset(1.0, 1.0),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        decoration: index == 0
+                            ? BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color.fromARGB(255, 252, 98, 228),
+                                    const Color.fromARGB(255, 50, 99, 242),
+                                  ],
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 1.0),
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(30.0),
+                                ),
+                              )
+                            : BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(30.0),
+                                ),
                               ),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(30.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                location.name,
+                                style: Theme.of(context).textTheme.headline2,
                               ),
-                            )
-                          : BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(30.0),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  location.country,
+                                  style: index == 0
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          .copyWith(
+                                            color: Colors.white,
+                                          )
+                                      : Theme.of(context).textTheme.headline6,
+                                ),
                               ),
-                            ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              location.name,
-                              style: Theme.of(context).textTheme.headline2,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text(
-                                location.country,
-                                style: index == 0
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .copyWith(
-                                          color: Colors.white,
-                                        )
-                                    : Theme.of(context).textTheme.headline6,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

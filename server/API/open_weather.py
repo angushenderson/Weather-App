@@ -5,11 +5,19 @@ from dotenv import load_dotenv
 import time
 import country_converter as coco
 
+# Load env file
 load_dotenv()
+# Create country code converter instance
 cc = coco.CountryConverter()
+# Open city list file
+location_data = json.load(open('server/API/city_list.json', 'r'))
 
 
 class Forecast:
+    """
+    A wrapper object for the OpenWeatherMap API
+    """
+
     def __init__(self, location: object, units='metric') -> None:
         """
         :param location Location object: Location object of location
@@ -243,10 +251,8 @@ class Location:
         """
         search_text = search_text.lower()
         if len(search_text) > 0:
-            # TODO Open this at server start as to improve response times
-            data = json.load(open('server/API/city_list.json', 'r'))
             locations = list(
-                filter(lambda item: search_text in item['name'].lower(), data[search_text[0].lower()]))
+                filter(lambda item: search_text in item['name'].lower(), location_data[search_text[0].lower()]))
             return locations if len(locations) <= self.SEARCH_LIMIT else locations[:self.SEARCH_LIMIT]
         else:
             return ValueError('Must pass text in search_text parameter.')

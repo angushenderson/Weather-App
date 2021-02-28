@@ -1,6 +1,7 @@
 import 'package:client/models/rain_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 
 class PrecipitationCard extends StatelessWidget {
   final List<RainGraphModel> precipitation;
@@ -14,7 +15,6 @@ class PrecipitationCard extends StatelessWidget {
     p.sort((a, b) => a.precipitation.compareTo(b.precipitation));
     double maxPrecipitation = p.last.precipitation;
     maxPrecipitation = maxPrecipitation + (maxPrecipitation * 0.25);
-    print(maxPrecipitation);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
@@ -29,12 +29,15 @@ class PrecipitationCard extends StatelessWidget {
               padding:
                   const EdgeInsets.only(left: 32.0, right: 32.0, top: 24.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Precipitation\nTrend',
                     style: Theme.of(context).textTheme.headline4,
                   ),
+                  // IconButton(
+                  //   icon: Icon(Icons.help_outline_rounded),
+                  // ),
                 ],
               ),
             ),
@@ -128,11 +131,11 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart> {
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
-                return '${precipitation[0].dt.hour.toString()}:${precipitation[0].dt.minute.toString()}';
+                return DateFormat('HH:mm').format(precipitation[0].dt);
               case 10:
-                return '${precipitation[30].dt.hour.toString()}:${precipitation[30].dt.minute.toString()}';
+                return DateFormat('HH:mm').format(precipitation[30].dt);
               case 20:
-                return '${precipitation[60].dt.hour.toString()}:${precipitation[60].dt.minute.toString()}';
+                return DateFormat('HH:mm').format(precipitation[60].dt);
             }
             return '';
           },

@@ -1,3 +1,4 @@
+import 'package:client/models/5_day.dart';
 import 'package:client/models/rain_graph.dart';
 
 class Forecast {
@@ -10,6 +11,8 @@ class Forecast {
   int dt; // DateTime of forecast fetch from server
   List<RainGraphModel>
       hourPrecipitation; // Precipitation minute by minute for the next hour
+  List<FiveDayForecastItem>
+      fiveDayForecast; // Five day forecast at 3 hour intervals
 
   Forecast({
     this.temperature,
@@ -20,6 +23,7 @@ class Forecast {
     this.twoDayForecast,
     this.dt,
     this.hourPrecipitation,
+    this.fiveDayForecast,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,23 @@ class Forecast {
       );
     });
 
+    List<FiveDayForecastItem> fiveDayForecast = [
+      FiveDayForecastItem(
+        temperature: json['forecast']['current']['main']['temp'],
+        dt: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
+      )
+    ];
+    json['forecast']['5_day_3_hour'].forEach(
+      (item) {
+        fiveDayForecast.add(
+          FiveDayForecastItem(
+            temperature: item['main']['temp'].toDouble(),
+            dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+          ),
+        );
+      },
+    );
+
     return Forecast(
       temperature: json['forecast']['current']['main']['temp'].toDouble(),
       feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
@@ -61,6 +82,7 @@ class Forecast {
       twoDayForecast: twoDayForecast,
       dt: json['dt'],
       hourPrecipitation: precipitation,
+      fiveDayForecast: fiveDayForecast,
     );
   }
 }

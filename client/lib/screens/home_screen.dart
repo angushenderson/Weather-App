@@ -6,8 +6,10 @@ import 'package:client/screens/city_select_screen.dart';
 import 'package:client/services/startup.dart';
 import 'package:client/widgets/daily_temperature_scroller.dart';
 import 'package:client/widgets/precipitation_card.dart';
+import 'package:client/widgets/temperature_trend_card.dart';
 import 'package:flutter/material.dart';
 import 'package:client/server/forecast.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -442,6 +444,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                 ),
                 // Info widgets
                 DailyTemperatureScroller(forecast.twoDayForecast),
+                TemperatureCard(forecast.fiveDayForecast),
                 PrecipitationCard(forecast.hourPrecipitation),
               ],
             ),
@@ -480,7 +483,6 @@ class _UpdateTimeState extends State<UpdateTime> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
     timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
       setState(() {});
     });
@@ -493,49 +495,19 @@ class _UpdateTimeState extends State<UpdateTime> {
   }
 
   String displayTime(DateTime fetchedTime, DateTime currentTime) {
-    // TODO Fix this, do current time- response time then cool formatting oke
-    if (fetchedTime.hour == currentTime.hour &&
-        fetchedTime.day == currentTime.day &&
-        fetchedTime.month == currentTime.month &&
-        fetchedTime.year == currentTime.year) {
-      return (currentTime.minute - fetchedTime.minute).toString() +
-          ' min' +
-          (currentTime.minute - fetchedTime.minute == 1 ? '' : 's');
-    } else if (fetchedTime.day == currentTime.day &&
-        fetchedTime.month == currentTime.month &&
-        fetchedTime.year == currentTime.year) {
-      return (currentTime.hour - fetchedTime.hour).toString() +
-          ' hour' +
-          (currentTime.hour - fetchedTime.hour == 1 ? '' : 's');
-    } else if (fetchedTime.month == currentTime.month &&
-        fetchedTime.year == currentTime.year) {
-      return (currentTime.month - fetchedTime.month).toString() +
-          ' month' +
-          (currentTime.month - fetchedTime.month == 1 ? '' : 's');
-    } else if (fetchedTime.year == currentTime.year) {
-      return (currentTime.year - fetchedTime.year).toString() +
-          ' year' +
-          (currentTime.year - fetchedTime.year == 1 ? '' : 's');
-    } else {
-      // Error of sorts occured
-      return 'some time';
-    }
+    return timeago.format(
+        new DateTime.now().subtract(currentTime.difference(fetchedTime)));
   }
 
   @override
   Widget build(BuildContext context) {
     DateTime fetchedTime = DateTime.fromMicrosecondsSinceEpoch(dt * 1000000);
     DateTime currentTime = DateTime.now();
+
     return Padding(
       padding: const EdgeInsets.only(left: 0.0),
       child: Text(
-        fetchedTime.minute == currentTime.minute &&
-                fetchedTime.hour == currentTime.hour &&
-                fetchedTime.day == currentTime.day &&
-                fetchedTime.month == currentTime.month &&
-                fetchedTime.year == currentTime.year
-            ? 'Just updated'
-            : 'Updated ' + displayTime(fetchedTime, currentTime) + ' ago',
+        'Updated ' + displayTime(fetchedTime, currentTime),
         style: Theme.of(context).textTheme.headline6,
       ),
     );
