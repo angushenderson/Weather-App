@@ -130,7 +130,6 @@ class _PrecipitationLineChartState extends State<TemperatureLineChart> {
           getTitles: (value) {
             int day_offset =
                 ((8 - (temperature[1].dt.hour / 3).round()) / 2).round();
-            print(day_offset.toString());
             if (value.toInt() == 0 && day_offset >= 2) {
               return 'Now';
             } else if (value.toInt() == 4 - day_offset) {

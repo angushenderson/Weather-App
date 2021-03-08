@@ -13,6 +13,9 @@ class Forecast {
       hourPrecipitation; // Precipitation minute by minute for the next hour
   List<FiveDayForecastItem>
       fiveDayForecast; // Five day forecast at 3 hour intervals
+  DateTime sunrise; // DateTime of current day sunrise
+  DateTime sunset; // DateTime of current day sunset
+  List<WeekForecastItem> weekForecast; // 8 day weekley forecast
 
   Forecast({
     this.temperature,
@@ -24,6 +27,9 @@ class Forecast {
     this.dt,
     this.hourPrecipitation,
     this.fiveDayForecast,
+    this.sunrise,
+    this.sunset,
+    this.weekForecast,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -58,7 +64,7 @@ class Forecast {
 
     List<FiveDayForecastItem> fiveDayForecast = [
       FiveDayForecastItem(
-        temperature: json['forecast']['current']['main']['temp'],
+        temperature: json['forecast']['current']['main']['temp'].toDouble(),
         dt: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
       )
     ];
@@ -73,16 +79,35 @@ class Forecast {
       },
     );
 
+    List<WeekForecastItem> weekForecast = [];
+    json['forecast']['week'].forEach((item) {
+      weekForecast.add(
+        WeekForecastItem(
+          dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+          description: item['weather'][0]['description'],
+          icon: item['weather'][0]['icon'].substring(0, 2),
+          maxTemp: item['temp']['max'].toDouble(),
+          minTemp: item['temp']['min'].toDouble(),
+          windDirection: item['wind_deg'],
+          windSpeed: item['wind_speed'].toDouble(),
+          chanceOfPrecipitation: item['pop'].toDouble(),
+        ),
+      );
+    });
+
     return Forecast(
       temperature: json['forecast']['current']['main']['temp'].toDouble(),
       feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
-      aqi: json['forecast']['air_pollution'][0]['main']['aqi'],
+      aqi: json['forecast']['air_pollution']['aqi'],
       description: description,
       icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
       twoDayForecast: twoDayForecast,
       dt: json['dt'],
       hourPrecipitation: precipitation,
       fiveDayForecast: fiveDayForecast,
+      sunrise: json['forecast']['current']['sunrise'],
+      sunset: json['forecast']['current']['sunset'],
+      weekForecast: weekForecast,
     );
   }
 }
@@ -93,4 +118,26 @@ class TwoDayForecast {
   String icon;
 
   TwoDayForecast({this.dt, this.temperature, this.icon});
+}
+
+class WeekForecastItem {
+  DateTime dt;
+  String description;
+  String icon;
+  double maxTemp;
+  double minTemp;
+  int windDirection;
+  double windSpeed;
+  double chanceOfPrecipitation;
+
+  WeekForecastItem({
+    this.dt,
+    this.description,
+    this.icon,
+    this.maxTemp,
+    this.minTemp,
+    this.windDirection,
+    this.windSpeed,
+    this.chanceOfPrecipitation,
+  });
 }

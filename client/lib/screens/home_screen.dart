@@ -153,7 +153,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
     with AutomaticKeepAliveClientMixin<HomeScreenContent> {
   // final Forecast _forecast;
 
-  final Location location;
+  Location location;
   Forecast forecast;
   bool error = false;
 
@@ -260,10 +260,16 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 2.0),
-                                  child: Text(
-                                    location.name,
-                                    style:
-                                        Theme.of(context).textTheme.headline1,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.7),
+                                    child: Text(
+                                      location.name,
+                                      style:
+                                          Theme.of(context).textTheme.headline1,
+                                    ),
                                   ),
                                 ),
                                 Padding(
@@ -443,7 +449,8 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                   height: 52,
                 ),
                 // Info widgets
-                DailyTemperatureScroller(forecast.twoDayForecast),
+                DailyTemperatureScroller(
+                    forecast.twoDayForecast, forecast, location),
                 TemperatureCard(forecast.fiveDayForecast),
                 PrecipitationCard(forecast.hourPrecipitation),
               ],

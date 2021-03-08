@@ -1,3 +1,5 @@
+import 'package:client/models/location.dart';
+import 'package:client/screens/8_day_forecast_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:client/models/forecast.dart';
@@ -5,20 +7,26 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DailyTemperatureScroller extends StatefulWidget {
   final List<TwoDayForecast> forecast;
+  final Forecast fullForecast;
+  final Location location;
 
-  DailyTemperatureScroller(this.forecast);
+  DailyTemperatureScroller(this.forecast, this.fullForecast, this.location);
 
   @override
   _DailyTemperatureScrollerState createState() =>
-      _DailyTemperatureScrollerState(this.forecast);
+      _DailyTemperatureScrollerState(
+          this.forecast, this.fullForecast, this.location);
 }
 
 class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
   final List<TwoDayForecast> forecast;
   int _activeDay = 0;
   AutoScrollController controller;
+  final Forecast fullForecast;
+  final Location location;
 
-  _DailyTemperatureScrollerState(this.forecast);
+  _DailyTemperatureScrollerState(
+      this.forecast, this.fullForecast, this.location);
 
   @override
   void initState() {
@@ -136,8 +144,21 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                 ],
               ),
               GestureDetector(
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          EightDayForecastScreen(fullForecast, location),
+                    ),
+                  )
+                },
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
+                  padding: const EdgeInsets.only(
+                    top: 4.0,
+                    bottom: 8.0,
+                    left: 8.0,
+                  ),
                   child: Text(
                     'Next 8 days  >',
                     style: TextStyle(

@@ -36,6 +36,9 @@ dependencies:
   geolocator: ^6.2.0
   timeago: ^2.0.30
   intl: ^0.16.1
+  syncfusion_flutter_gauges: ^18.4.44
+  font_awesome_flutter: ^8.11.0
+  flutter_icons: ^1.1.0
 
 dev_dependencies:
   flutter_test:

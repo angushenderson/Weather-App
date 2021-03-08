@@ -174,8 +174,8 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart> {
                   radius: 8,
                   color: lerpGradient(
                       barData.colors, barData.colorStops, percent / 100),
-                  strokeWidth: 2,
-                  strokeColor: Colors.black,
+                  strokeWidth: 3,
+                  strokeColor: Colors.white,
                 ),
               ),
             );
