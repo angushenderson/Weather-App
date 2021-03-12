@@ -17,6 +17,7 @@ class Forecast {
   DateTime sunset; // DateTime of current day sunset
   List<WeekForecastItem> weekForecast; // 8 day weekley forecast
   Analytics analytics; // Temperature analytics for 8 day weekly forecast screen
+  List<TwoDayPrecipitation> twoDayPrecipitation; // 2 day rain forecast
 
   Forecast({
     this.temperature,
@@ -32,6 +33,7 @@ class Forecast {
     this.sunset,
     this.weekForecast,
     this.analytics,
+    this.twoDayPrecipitation,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,8 @@ class Forecast {
           dt: item['dt'],
           temperature: item['temp'].toDouble(),
           icon: item['weather'][0]['icon'].substring(0, 2),
+          precipitation:
+              item.containsKey('rain') ? item['rain']['1h'].toDouble() : 0.0,
         ));
       }
     });
@@ -68,6 +72,9 @@ class Forecast {
       FiveDayForecastItem(
         temperature: json['forecast']['current']['main']['temp'].toDouble(),
         dt: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
+        precipitation: json['forecast']['current'].containsKey('rain')
+            ? json['forecast']['current']['rain']['1h']
+            : 0,
       )
     ];
     json['forecast']['5_day_3_hour'].forEach(
@@ -76,6 +83,8 @@ class Forecast {
           FiveDayForecastItem(
             temperature: item['main']['temp'].toDouble(),
             dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+            precipitation:
+                item.containsKey('rain') ? item['rain']['3h'].toDouble() : 0.0,
           ),
         );
       },
@@ -97,23 +106,34 @@ class Forecast {
       );
     });
 
+    List<TwoDayPrecipitation> twoDayPrecipitation = [];
+    json['forecast']['2_day_hourly'].forEach((item) {
+      twoDayPrecipitation.add(TwoDayPrecipitation(
+        dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+        precipitation:
+            item.containsKey('rain') ? item['rain']['1h'].toDouble() : 0.0,
+      ));
+    });
+
     return Forecast(
-        temperature: json['forecast']['current']['main']['temp'].toDouble(),
-        feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
-        aqi: json['forecast']['air_pollution']['aqi'],
-        description: description,
-        icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
-        twoDayForecast: twoDayForecast,
-        dt: json['dt'],
-        hourPrecipitation: precipitation,
-        fiveDayForecast: fiveDayForecast,
-        sunrise: json['forecast']['current']['sunrise'],
-        sunset: json['forecast']['current']['sunset'],
-        weekForecast: weekForecast,
-        analytics: new Analytics(
-          // temperature: json['analytics']['temperature'],
-          precipitation: json['analytics']['precipitation'],
-        ));
+      temperature: json['forecast']['current']['main']['temp'].toDouble(),
+      feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
+      aqi: json['forecast']['air_pollution']['aqi'],
+      description: description,
+      icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
+      twoDayForecast: twoDayForecast,
+      dt: json['dt'],
+      hourPrecipitation: precipitation,
+      fiveDayForecast: fiveDayForecast,
+      sunrise: json['forecast']['current']['sunrise'],
+      sunset: json['forecast']['current']['sunset'],
+      weekForecast: weekForecast,
+      analytics: new Analytics(
+        // temperature: json['analytics']['temperature'],
+        precipitation: json['analytics']['precipitation'],
+      ),
+      twoDayPrecipitation: twoDayPrecipitation,
+    );
   }
 }
 
@@ -121,8 +141,9 @@ class TwoDayForecast {
   int dt;
   double temperature;
   String icon;
+  double precipitation;
 
-  TwoDayForecast({this.dt, this.temperature, this.icon});
+  TwoDayForecast({this.dt, this.temperature, this.icon, this.precipitation});
 }
 
 class WeekForecastItem {
@@ -145,6 +166,13 @@ class WeekForecastItem {
     this.windSpeed,
     this.chanceOfPrecipitation,
   });
+}
+
+class TwoDayPrecipitation {
+  DateTime dt;
+  double precipitation;
+
+  TwoDayPrecipitation({this.dt, this.precipitation});
 }
 
 class Analytics {

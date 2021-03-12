@@ -9,8 +9,7 @@ if response.status_code == 200:
     json = response.json()
     # print(list(map(lambda item: item['temp']
     #    ['max'], json['forecast']['week'])))
-    print(json['forecast']['week'][0])
-    print(json['analytics'])
+    print(len(json['forecast']['5_day_3_hour']))
 
 else:
     print(response.status_code)

@@ -412,7 +412,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                 DailyTemperatureScroller(
                     forecast.twoDayForecast, forecast, location),
                 TemperatureCard(forecast.fiveDayForecast),
-                PrecipitationCard(forecast.hourPrecipitation),
+                PrecipitationCard(forecast.hourPrecipitation, forecast),
               ],
             ),
           )

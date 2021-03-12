@@ -124,28 +124,18 @@ class _PrecipitationLineChartState extends State<TemperatureLineChart> {
           showTitles: true,
           reservedSize: 0,
           getTextStyles: (value) => const TextStyle(
-              color: Color(0xff68737d),
-              fontWeight: FontWeight.w500,
-              fontSize: 12),
+            color: Color(0xff68737d),
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
           getTitles: (value) {
-            int day_offset =
-                ((8 - (temperature[1].dt.hour / 3).round()) / 2).round();
-            if (value.toInt() == 0 && day_offset >= 2) {
+            if (value.toInt() == 0) {
               return 'Now';
-            } else if (value.toInt() == 4 - day_offset) {
-              return 'Tommorow';
-            } else if (value.toInt() == 8 - day_offset) {
+            } else if (value.toInt() == 10) {
               return DateFormat('dd/MM')
-                  .format(temperature[16 + (8 - day_offset * 2)].dt);
-            } else if (value.toInt() == 12 - day_offset) {
-              return DateFormat('dd/MM')
-                  .format(temperature[16 + (8 - day_offset * 2)].dt);
-            } else if (value.toInt() == 16 - day_offset) {
-              return DateFormat('dd/MM')
-                  .format(temperature[24 + (8 - day_offset * 2)].dt);
-            } else if (value.toInt() == 20 - day_offset) {
-              return DateFormat('dd/MM')
-                  .format(temperature[32 + (8 - day_offset * 2)].dt);
+                  .format(temperature[temperature.length ~/ 2].dt);
+            } else if (value.toInt() == 20) {
+              return DateFormat('dd/MM').format(temperature.last.dt);
             }
             return '';
           },

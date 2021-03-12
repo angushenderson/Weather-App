@@ -1,17 +1,56 @@
+import 'package:client/models/forecast.dart';
 import 'package:client/models/rain_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
 class PrecipitationCard extends StatelessWidget {
-  final List<RainGraphModel> precipitation;
+  final List<RainGraphModel> hourPrecipitation;
+  final Forecast forecast;
 
-  PrecipitationCard(this.precipitation);
+  PrecipitationCard(this.hourPrecipitation, this.forecast);
 
   @override
   Widget build(BuildContext context) {
+    return PrecipitationLineChart(hourPrecipitation, forecast);
+  }
+}
+
+// Chart stuff
+class PrecipitationLineChart extends StatefulWidget {
+  final List<RainGraphModel> precipitation;
+  final Forecast forecast;
+
+  PrecipitationLineChart(this.precipitation, this.forecast);
+
+  @override
+  _PrecipitationLineChartState createState() =>
+      _PrecipitationLineChartState(this.precipitation, this.forecast);
+}
+
+class _PrecipitationLineChartState extends State<PrecipitationLineChart>
+    with AutomaticKeepAliveClientMixin {
+  List<RainGraphModel> hourPrecipitation;
+  Forecast forecast;
+  double maxPrecipitation;
+  int dataShowing = 0;
+
+  _PrecipitationLineChartState(this.hourPrecipitation, this.forecast);
+
+  List<Color> gradientColors = [
+    const Color.fromARGB(255, 40, 216, 164),
+    const Color.fromARGB(255, 61, 168, 255),
+  ];
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
     // Determine maximum rainfall
-    List<RainGraphModel> p = [...precipitation];
+    List<RainGraphModel> p = [...hourPrecipitation];
     p.sort((a, b) => a.precipitation.compareTo(b.precipitation));
     double maxPrecipitation = p.last.precipitation;
     maxPrecipitation = maxPrecipitation + (maxPrecipitation * 0.25);
@@ -38,6 +77,28 @@ class PrecipitationCard extends StatelessWidget {
                   // IconButton(
                   //   icon: Icon(Icons.help_outline_rounded),
                   // ),
+                  FlatButton(
+                    color: gradientColors[1],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: Text(
+                      ['1 Hour', '2 Days', '5 Days'][dataShowing],
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                    onPressed: () {
+                      int newData = dataShowing + 1;
+                      if (newData > 2) {
+                        newData = 0;
+                      }
+
+                      setState(() {
+                        dataShowing = newData;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -45,7 +106,25 @@ class PrecipitationCard extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16.0, bottom: 40.0),
               child: Container(
                 height: 100,
-                child: PrecipitationLineChart(precipitation, maxPrecipitation),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(18),
+                        ),
+                      ),
+                      child: LineChart(
+                        [
+                          hourData(),
+                          twoDayData(),
+                          weekData(),
+                        ][dataShowing],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -53,52 +132,10 @@ class PrecipitationCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// Chart stuff
-class PrecipitationLineChart extends StatefulWidget {
-  final List<RainGraphModel> precipitation;
-  final double maxPrecipitation;
-
-  PrecipitationLineChart(this.precipitation, this.maxPrecipitation);
-
-  @override
-  _PrecipitationLineChartState createState() =>
-      _PrecipitationLineChartState(this.precipitation, maxPrecipitation);
-}
-
-class _PrecipitationLineChartState extends State<PrecipitationLineChart> {
-  List<RainGraphModel> precipitation;
-  double maxPrecipitation;
-
-  _PrecipitationLineChartState(this.precipitation, this.maxPrecipitation);
-
-  List<Color> gradientColors = [
-    const Color.fromARGB(255, 40, 216, 164),
-    const Color.fromARGB(255, 61, 168, 255),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(18),
-            ),
-          ),
-          child: LineChart(
-            mainData(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  LineChartData mainData() {
+  LineChartData hourData() {
     List<FlSpot> spots = [];
-    precipitation.asMap().forEach((index, item) {
+    hourPrecipitation.asMap().forEach((index, item) {
       spots.add(FlSpot(index / 3, item.precipitation));
     });
     return LineChartData(
@@ -131,11 +168,139 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart> {
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
-                return DateFormat('HH:mm').format(precipitation[0].dt);
+                return DateFormat('HH:mm').format(hourPrecipitation[0].dt);
               case 10:
-                return DateFormat('HH:mm').format(precipitation[30].dt);
+                return DateFormat('HH:mm').format(hourPrecipitation[30].dt);
               case 20:
-                return DateFormat('HH:mm').format(precipitation[60].dt);
+                return DateFormat('HH:mm').format(hourPrecipitation[60].dt);
+            }
+            return '';
+          },
+          margin: 8,
+        ),
+        leftTitles: SideTitles(
+          showTitles: false,
+          reservedSize: 0,
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        // border: Border.all(color: const Color(0xff37434d), width: 1),
+        border: const Border(
+          left: BorderSide(color: Color(0xff37434d), width: 1),
+          bottom: BorderSide(color: Color(0xff37434d), width: 1),
+          right: BorderSide(color: Color(0xff37434d), width: 1),
+        ),
+      ),
+      minX: 0,
+      maxX: 20,
+      minY: 0,
+      maxY: maxPrecipitation,
+      lineTouchData: LineTouchData(
+        enabled: true,
+        getTouchedSpotIndicator:
+            (LineChartBarData barData, List<int> spotIndexes) {
+          return spotIndexes.map((index) {
+            return TouchedSpotIndicatorData(
+              FlLine(
+                color: lerpGradient(
+                    barData.colors, barData.colorStops, 100 / 61 * index / 100),
+              ),
+              FlDotData(
+                show: true,
+                getDotPainter: (spot, percent, barData, index) =>
+                    FlDotCirclePainter(
+                  radius: 8,
+                  color: lerpGradient(
+                      barData.colors, barData.colorStops, percent / 100),
+                  strokeWidth: 3,
+                  strokeColor: Colors.white,
+                ),
+              ),
+            );
+          }).toList();
+        },
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: Color.fromARGB(255, 61, 168, 255).withOpacity(0.3),
+          tooltipRoundedRadius: 16,
+          getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
+            return lineBarsSpot.map((lineBarSpot) {
+              return LineTooltipItem(
+                lineBarSpot.y.toString() + 'mm',
+                const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+              );
+            }).toList();
+          },
+        ),
+      ),
+      lineBarsData: [
+        LineChartBarData(
+          spots: spots,
+          isCurved: true,
+          colors: gradientColors,
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            colors:
+                gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  LineChartData twoDayData() {
+    List<FlSpot> spots = [];
+    forecast.twoDayPrecipitation.asMap().forEach((index, item) {
+      if (index < 40) {
+        spots.add(FlSpot(index / 2, item.precipitation));
+      }
+    });
+
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        drawHorizontalLine: false,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 0,
+          getTextStyles: (value) => const TextStyle(
+              color: Color(0xff68737d),
+              fontWeight: FontWeight.w500,
+              fontSize: 16),
+          getTitles: (value) {
+            switch (value.toInt()) {
+              case 0:
+                return DateFormat('HH:mm')
+                    .format(forecast.twoDayPrecipitation[0].dt);
+              case 10:
+                return DateFormat('HH:mm').format(forecast
+                    .twoDayPrecipitation[forecast.twoDayForecast.length ~/ 2]
+                    .dt);
+              case 20:
+                return DateFormat('EE')
+                    .format(forecast.twoDayPrecipitation[39].dt);
             }
             return '';
           },
@@ -187,7 +352,136 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart> {
           getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
             return lineBarsSpot.map((lineBarSpot) {
               return LineTooltipItem(
-                lineBarSpot.y.toString() + 'mm',
+                DateFormat('ha').format(forecast
+                        .twoDayPrecipitation[(lineBarSpot.x * 2).toInt()].dt) +
+                    ' ' +
+                    lineBarSpot.y.toString() +
+                    'mm',
+                const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+              );
+            }).toList();
+          },
+        ),
+      ),
+      lineBarsData: [
+        LineChartBarData(
+          spots: spots,
+          isCurved: true,
+          colors: gradientColors,
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            colors:
+                gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  LineChartData weekData() {
+    List<FlSpot> spots = [];
+    forecast.fiveDayForecast.asMap().forEach((index, item) {
+      spots.add(FlSpot(index / 2, item.precipitation));
+    });
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        drawHorizontalLine: false,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 0,
+          getTextStyles: (value) => const TextStyle(
+              color: Color(0xff68737d),
+              fontWeight: FontWeight.w500,
+              fontSize: 16),
+          getTitles: (value) {
+            switch (value.toInt()) {
+              case 0:
+                return 'Today';
+              case 10:
+                return DateFormat('EE').format(forecast
+                    .fiveDayForecast[forecast.fiveDayForecast.length ~/ 2].dt);
+              case 20:
+                return DateFormat('EE')
+                    .format(forecast.fiveDayForecast.last.dt);
+            }
+            return '';
+          },
+          margin: 8,
+        ),
+        leftTitles: SideTitles(
+          showTitles: false,
+          reservedSize: 0,
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        // border: Border.all(color: const Color(0xff37434d), width: 1),
+        border: Border.symmetric(
+          vertical: BorderSide(color: Color(0xff37434d), width: 1),
+        ),
+      ),
+      minX: 0,
+      maxX: 20,
+      minY: 0,
+      maxY: maxPrecipitation,
+      lineTouchData: LineTouchData(
+        enabled: true,
+        getTouchedSpotIndicator:
+            (LineChartBarData barData, List<int> spotIndexes) {
+          return spotIndexes.map((index) {
+            return TouchedSpotIndicatorData(
+              FlLine(
+                color: lerpGradient(
+                    barData.colors, barData.colorStops, 100 / 61 * index / 100),
+              ),
+              FlDotData(
+                show: true,
+                getDotPainter: (spot, percent, barData, index) =>
+                    FlDotCirclePainter(
+                  radius: 8,
+                  color: lerpGradient(
+                      barData.colors, barData.colorStops, percent / 100),
+                  strokeWidth: 3,
+                  strokeColor: Colors.white,
+                ),
+              ),
+            );
+          }).toList();
+        },
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: Color.fromARGB(255, 61, 168, 255).withOpacity(0.3),
+          tooltipRoundedRadius: 16,
+          getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
+            return lineBarsSpot.map((lineBarSpot) {
+              return LineTooltipItem(
+                DateFormat('EE').format(forecast
+                        .fiveDayForecast[(lineBarSpot.x * 2).toInt()].dt) +
+                    ' ' +
+                    lineBarSpot.y.toString() +
+                    'mm',
                 const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.w500),
               );
