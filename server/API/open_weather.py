@@ -4,6 +4,8 @@ import os
 from dotenv import load_dotenv
 import time
 import country_converter as coco
+from .forecast_analytics import ForecastAnalytics
+
 
 # Load env file
 load_dotenv()
@@ -30,6 +32,7 @@ class Forecast:
         self.location = location
         self.units = units
         self.use_weather_bit_aqi_data = use_weather_bit_aqi_data
+        self.analytics = ForecastAnalytics(self)
 
     def __repr__(self):
         return f"<Forecast location={self.location.coords} units={self.units}>"
@@ -205,11 +208,18 @@ class Forecast:
                 'week': self.daily_forecast_7_days,
                 'air_pollution': self.current_air_pollution,
                 'weather_alerts': self.weather_alerts,
-            }
+            },
+            'analytics': self.generate_analytics(),
         }
 
     @forecast.setter
     def forecast(self): pass
+
+    def generate_analytics(self):
+        return {
+            'temperature': self.analytics.weekly_temperature(),
+            'precipitation': self.analytics.weekly_precipitation(),
+        }
 
 
 class Location:

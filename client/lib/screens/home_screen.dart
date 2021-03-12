@@ -35,45 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void fetchForecast(int locationIndex) async {
-    try {
-      var result = await fetchForecastFromServer(
-          _locations.locations[locationIndex].lat,
-          _locations.locations[locationIndex].lon);
-      setState(() {
-        _locations.locations[locationIndex].forecast = result;
-      });
-    } catch (e) {
-      print(e);
-      setState(() {
-        error = true;
-      });
-    }
-  }
-
-  void fetchAllForecasts() async {
-    try {
-      for (int i = 0; i < _locations.locations.length; i++) {
-        var location = _locations.locations[i];
-        var result = await fetchForecastFromServer(location.lat, location.lon);
-        location.forecast = result;
-      }
-
-      setState(() {
-        _locations = _locations;
-      });
-    } catch (e) {
-      print(e);
-      setState(() {
-        error = true;
-      });
-    }
-  }
-
-  Future<void> _refreshForecast() async {
-    return fetchForecast(_tabController.index);
-  }
-
   void startup() async {
     fetchLocations();
   }
@@ -109,18 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ? TabBarView(
                 controller: _tabController,
                 children: tabContent,
-                // children: [
-                // RefreshIndicator(
-                //   backgroundColor: Theme.of(context).cardColor,
-                //   onRefresh: _refreshForecast,
-                //   child: HomeScreenContent(_forecast),
-                // ),
-                // RefreshIndicator(
-                //   backgroundColor: Theme.of(context).cardColor,
-                //   onRefresh: _refreshForecast,
-                //   child: HomeScreenContent(_forecast),
-                // ),
-                // ],
               )
             : Center(
                 child: Column(
@@ -131,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Fetching locations...',
                       style: Theme.of(context).textTheme.headline2,
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -151,8 +100,6 @@ class HomeScreenContent extends StatefulWidget {
 
 class _HomeScreenContentState extends State<HomeScreenContent>
     with AutomaticKeepAliveClientMixin<HomeScreenContent> {
-  // final Forecast _forecast;
-
   Location location;
   Forecast forecast;
   bool error = false;
@@ -165,6 +112,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   void fetchForecast() async {
     try {
       var result = await fetchForecastFromServer(location.lat, location.lon);
+      print(result.analytics.precipitation);
       setState(() {
         forecast = result;
       });
@@ -189,7 +137,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return forecast != null
+    return forecast != null && !error
         ? RefreshIndicator(
             backgroundColor: Theme.of(context).cardColor,
             onRefresh: _refreshForecast,
@@ -232,7 +180,20 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                             ),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              PopupMenuButton(
+                                onSelected: (String choice) {
+                                  print(choice);
+                                },
+                                itemBuilder: (_) => <PopupMenuItem<String>>[
+                                  PopupMenuItem<String>(
+                                    value: 'Settings',
+                                    child: Text('Settings'),
+                                  ),
+                                  // new PopupMenuItem<String>(),
+                                ],
+                              );
+                            },
                             icon: Icon(
                               Icons.more_vert,
                               size: 36.0,
@@ -375,7 +336,6 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                                   begin: FractionalOffset(0.0, 0.0),
                                   end: FractionalOffset(1.0, 1.0),
                                 ),
-                                // borderRadius: BorderRadius.circular(64.0),
                               ),
                               child: Center(
                                 child: Stack(
@@ -456,19 +416,34 @@ class _HomeScreenContentState extends State<HomeScreenContent>
               ],
             ),
           )
-        : Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                Container(height: 8.0),
-                Text(
-                  'Fetching forecast...',
-                  style: Theme.of(context).textTheme.headline2,
-                )
-              ],
-            ),
-          );
+        : !error
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Container(height: 8.0),
+                    Text(
+                      'Fetching forecast...',
+                      style: Theme.of(context).textTheme.headline2,
+                    )
+                  ],
+                ),
+              )
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        'An error occured whilst fetching the forecast',
+                        style: Theme.of(context).textTheme.headline2,
+                      ),
+                    ),
+                  ],
+                ),
+              );
   }
 }
 

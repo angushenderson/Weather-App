@@ -97,7 +97,10 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                     onTap: () => {
                       setState(() {
                         _activeDay = 1;
-                        _scrollToIndex(24 - DateTime.now().hour);
+                        _scrollToIndex(24 -
+                            DateTime.fromMillisecondsSinceEpoch(
+                                    forecast[0].dt * 1000)
+                                .hour);
                       })
                     },
                     child: Padding(
@@ -177,11 +180,21 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
           child: NotificationListener(
             onNotification: (t) {
               double pos = controller.position.pixels / 100;
-              if (pos > (23 - DateTime.now().hour) && _activeDay == 0) {
+              if (pos >
+                      (23 -
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  forecast[0].dt * 1000)
+                              .hour) &&
+                  _activeDay == 0) {
                 setState(() {
                   _activeDay = 1;
                 });
-              } else if (pos <= (23 - DateTime.now().hour) && _activeDay == 1) {
+              } else if (pos <=
+                      (23 -
+                          DateTime.fromMillisecondsSinceEpoch(
+                                  forecast[0].dt * 1000)
+                              .hour) &&
+                  _activeDay == 1) {
                 setState(() {
                   _activeDay = 0;
                 });

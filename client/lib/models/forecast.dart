@@ -16,6 +16,7 @@ class Forecast {
   DateTime sunrise; // DateTime of current day sunrise
   DateTime sunset; // DateTime of current day sunset
   List<WeekForecastItem> weekForecast; // 8 day weekley forecast
+  Analytics analytics; // Temperature analytics for 8 day weekly forecast screen
 
   Forecast({
     this.temperature,
@@ -30,6 +31,7 @@ class Forecast {
     this.sunrise,
     this.sunset,
     this.weekForecast,
+    this.analytics,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -96,19 +98,22 @@ class Forecast {
     });
 
     return Forecast(
-      temperature: json['forecast']['current']['main']['temp'].toDouble(),
-      feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
-      aqi: json['forecast']['air_pollution']['aqi'],
-      description: description,
-      icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
-      twoDayForecast: twoDayForecast,
-      dt: json['dt'],
-      hourPrecipitation: precipitation,
-      fiveDayForecast: fiveDayForecast,
-      sunrise: json['forecast']['current']['sunrise'],
-      sunset: json['forecast']['current']['sunset'],
-      weekForecast: weekForecast,
-    );
+        temperature: json['forecast']['current']['main']['temp'].toDouble(),
+        feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
+        aqi: json['forecast']['air_pollution']['aqi'],
+        description: description,
+        icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
+        twoDayForecast: twoDayForecast,
+        dt: json['dt'],
+        hourPrecipitation: precipitation,
+        fiveDayForecast: fiveDayForecast,
+        sunrise: json['forecast']['current']['sunrise'],
+        sunset: json['forecast']['current']['sunset'],
+        weekForecast: weekForecast,
+        analytics: new Analytics(
+          // temperature: json['analytics']['temperature'],
+          precipitation: json['analytics']['precipitation'],
+        ));
   }
 }
 
@@ -140,4 +145,11 @@ class WeekForecastItem {
     this.windSpeed,
     this.chanceOfPrecipitation,
   });
+}
+
+class Analytics {
+  String temperature;
+  String precipitation;
+
+  Analytics({this.temperature, this.precipitation});
 }

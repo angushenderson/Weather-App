@@ -33,7 +33,7 @@ class EightDayForecastScreen extends StatelessWidget {
   int windLevel(double windSpeed, {bool metric = true}) {
     // Horrific code I know, but it works
     if (metric) {
-      // Conver to miles per hour
+      // Conver meters per second to miles per hour
       windSpeed = windSpeed * 2.237;
     }
     // Wind speed translation into Beaufort levels
@@ -546,7 +546,7 @@ class EightDayForecastScreen extends StatelessWidget {
                                 style: Theme.of(context).textTheme.headline6,
                               ),
                               Text(
-                                'PRECIPITATION ANALYTICS',
+                                forecast.analytics.precipitation,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
