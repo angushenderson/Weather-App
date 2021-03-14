@@ -103,6 +103,8 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   Location location;
   Forecast forecast;
   bool error = false;
+  final GlobalKey<_UpdateTimeState> refreshTimeStateKey =
+      GlobalKey<_UpdateTimeState>();
 
   _HomeScreenContentState(this.location);
 
@@ -112,7 +114,9 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   void fetchForecast() async {
     try {
       var result = await fetchForecastFromServer(location.lat, location.lon);
-      print(result.analytics.precipitation);
+      if (forecast != null) {
+        refreshTimeStateKey.currentState.update(result.dt);
+      }
       setState(() {
         forecast = result;
       });
@@ -257,7 +261,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                                               ),
                                             )
                                           : Container(),
-                                      UpdateTime(forecast.dt),
+                                      UpdateTime(
+                                        this.forecast.dt,
+                                        key: refreshTimeStateKey,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -450,7 +457,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
 class UpdateTime extends StatefulWidget {
   final int dt; // Fetched time
 
-  UpdateTime(this.dt);
+  UpdateTime(this.dt, {Key key}) : super(key: key);
 
   @override
   _UpdateTimeState createState() => _UpdateTimeState(this.dt);
@@ -474,6 +481,16 @@ class _UpdateTimeState extends State<UpdateTime> {
   void dispose() {
     timer.cancel();
     super.dispose();
+  }
+
+  void update(int dt) {
+    timer.cancel();
+    setState(() {
+      dt = dt;
+    });
+    timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
+      setState(() {});
+    });
   }
 
   String displayTime(DateTime fetchedTime, DateTime currentTime) {

@@ -52,7 +52,7 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () => {
@@ -146,27 +146,35 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                   ),
                 ],
               ),
-              GestureDetector(
-                onTap: () => {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          EightDayForecastScreen(fullForecast, location),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: GestureDetector(
+                  onTap: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            EightDayForecastScreen(fullForecast, location),
+                      ),
+                    )
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(24),
                     ),
-                  )
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 4.0,
-                    bottom: 8.0,
-                    left: 8.0,
-                  ),
-                  child: Text(
-                    'Next 8 days  >',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 50, 99, 242),
-                      fontSize: 16.0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
+                      child: Text(
+                        'Next 8 days',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 50, 99, 242),
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -264,6 +272,7 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                                 color: index != 1
                                     ? Color.fromARGB(255, 101, 101, 101)
                                     : Colors.white,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                             Positioned(
@@ -282,6 +291,7 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],

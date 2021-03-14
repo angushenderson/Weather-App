@@ -257,7 +257,7 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart>
   LineChartData twoDayData() {
     List<FlSpot> spots = [];
     forecast.twoDayPrecipitation.asMap().forEach((index, item) {
-      if (index < 40) {
+      if (index < 41) {
         spots.add(FlSpot(index / 2, item.precipitation));
       }
     });
@@ -295,9 +295,8 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart>
                 return DateFormat('HH:mm')
                     .format(forecast.twoDayPrecipitation[0].dt);
               case 10:
-                return DateFormat('HH:mm').format(forecast
-                    .twoDayPrecipitation[forecast.twoDayForecast.length ~/ 2]
-                    .dt);
+                return DateFormat('HH:mm')
+                    .format(forecast.twoDayPrecipitation[20].dt);
               case 20:
                 return DateFormat('EE')
                     .format(forecast.twoDayPrecipitation[39].dt);
@@ -477,7 +476,7 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart>
           getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
             return lineBarsSpot.map((lineBarSpot) {
               return LineTooltipItem(
-                DateFormat('EE').format(forecast
+                DateFormat('EE ha').format(forecast
                         .fiveDayForecast[(lineBarSpot.x * 2).toInt()].dt) +
                     ' ' +
                     lineBarSpot.y.toString() +

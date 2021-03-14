@@ -130,7 +130,7 @@ class _PrecipitationLineChartState extends State<TemperatureLineChart> {
           ),
           getTitles: (value) {
             if (value.toInt() == 0) {
-              return 'Now';
+              return DateFormat('ha').format(temperature[0].dt);
             } else if (value.toInt() == 10) {
               return DateFormat('dd/MM')
                   .format(temperature[temperature.length ~/ 2].dt);
