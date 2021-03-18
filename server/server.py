@@ -29,6 +29,7 @@ class LocationNameSearch(Resource):
     def get(self, city):
         location = open_weather.Location()
         suggested_names = location.search_suggestions(city)
+        print(suggested_names)
         names = [n['name'] for n in suggested_names]
         location_names = location.name_search(max(set(names), key=names.count))
         print(location_names)

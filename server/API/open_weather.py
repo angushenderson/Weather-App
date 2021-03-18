@@ -118,7 +118,7 @@ class Forecast:
     def detailed_3_hour_5_day_forecast(self): pass
 
     @property
-    def current_air_pollution(self):
+    def current_air_pollution(self) -> dict:
         """
         Get the current air pollution reading and breakdown of gases in atmosphere in current location
         """
@@ -136,7 +136,7 @@ class Forecast:
     def current_air_pollution(self): pass
 
     @property
-    def one_call_api(self):
+    def one_call_api(self) -> dict:
         """
         Call the one_call API
         """
@@ -147,6 +147,17 @@ class Forecast:
 
     @one_call_api.setter
     def one_call_api(self): pass
+
+    @property
+    def timezone_offset(self) -> int:
+        """
+        The current timezone offset that the forecast location is in
+        """
+        self._timezone_offset = self.one_call_api['timezone_offset']
+        return self._timezone_offset
+
+    @timezone_offset.setter
+    def timezone_offset(self): pass
 
     def _get_json(self, attr: str, url: str, use_cache=True) -> dict:
         """
@@ -195,6 +206,7 @@ class Forecast:
         """
         return {
             'dt': int(round(time.time())),
+            'timezone_offset': self.timezone_offset,
             'location': {
                 'lat': self.location.coords[0],
                 'lon': self.location.coords[1],
@@ -207,6 +219,7 @@ class Forecast:
                 '5_day_3_hour': self.detailed_3_hour_5_day_forecast,
                 'week': self.daily_forecast_7_days,
                 'air_pollution': self.current_air_pollution,
+                'one_call_api': self.one_call_api,
                 'weather_alerts': self.weather_alerts,
             },
             'analytics': self.generate_analytics(),
@@ -249,13 +262,6 @@ class Location:
         response = self._get(city_name, country_code=country_code)
         j = response.json()
 
-        def pop_local_names(item):
-            del item['local_names']
-            return item
-
-        # Remove local names
-        # return list(map(pop_local_names, j)) if len(j) > 0 else None
-
         # Convert iso3166 country code to country name
         for i in range(len(j)):
             j[i]['country'] = coco.convert(
@@ -286,7 +292,6 @@ class Location:
         response = requests.get(
             f"https://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={self.API_KEY}")
         if response.status_code == 200:
-            print(response.json())
             return response.json()
         else:
             raise ConnectionError(

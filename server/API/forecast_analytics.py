@@ -13,12 +13,16 @@ class ForecastAnalytics:
 
     def weekly_temperature(self) -> str:
         """
+        Generate informative analytics statement regarding temperature trends
+        :return str: Analytics message
         """
         current_temp = self.forecast.daily_forecast_7_days[0]['temp']['day']
         max_index, max_temp = max(
             enumerate(map(lambda item: item['temp']['max'], self.forecast.daily_forecast_7_days)), key=operator.itemgetter(1))
         min_index, min_temp = min(
             enumerate(map(lambda item: item['temp']['min'], self.forecast.daily_forecast_7_days)), key=operator.itemgetter(1))
+        average_temp = round(sum(list(map(
+            lambda item: item['temp']['day'], self.forecast.daily_forecast_7_days))) / len(self.forecast.daily_forecast_7_days), 1)
         # average_temp = round(sum(map(lambda item: item['temp']['day'], self.forecast.daily_forecast_7_days)) / len(
         # self.forecast.daily_forecast_7_days), 2)
 
@@ -34,7 +38,7 @@ class ForecastAnalytics:
             # Pretty stable temperature - return average weekly temperature
             pass
 
-        return max_temp
+        return f'Average temperature of {average_temp}°'
 
     def weekly_precipitation(self) -> str:
         """
