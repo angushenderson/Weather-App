@@ -5,6 +5,7 @@ import 'package:client/models/forecast.dart';
 class Locations {
   List<Location> locations;
   int currentLocationIndex;
+  int timezoneOffset;
 
   Locations({this.locations, this.currentLocationIndex = 0});
 
@@ -29,6 +30,14 @@ class Location {
   double lon;
   bool isCurrentLocation = false;
   Forecast forecast;
+  int timezoneOffset;
 
-  Location({this.name, this.country, this.lat, this.lon, this.forecast});
+  Location({
+    this.name,
+    this.country,
+    this.lat,
+    this.lon,
+    this.forecast,
+    this.timezoneOffset,
+  });
 }

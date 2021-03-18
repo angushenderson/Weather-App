@@ -130,12 +130,20 @@ class _PrecipitationLineChartState extends State<TemperatureLineChart> {
           ),
           getTitles: (value) {
             if (value.toInt() == 0) {
-              return DateFormat('ha').format(temperature[0].dt);
+              return DateFormat('ha').format(temperature[0].dt.add(Duration(
+                    seconds: temperature[0].timezoneOffset,
+                  )));
             } else if (value.toInt() == 10) {
               return DateFormat('dd/MM')
-                  .format(temperature[temperature.length ~/ 2].dt);
+                  .format(temperature[temperature.length ~/ 2].dt.add(Duration(
+                        seconds:
+                            temperature[temperature.length ~/ 2].timezoneOffset,
+                      )));
             } else if (value.toInt() == 20) {
-              return DateFormat('dd/MM').format(temperature.last.dt);
+              return DateFormat('dd/MM')
+                  .format(temperature.last.dt.add(Duration(
+                seconds: temperature.last.timezoneOffset,
+              )));
             }
             return '';
           },

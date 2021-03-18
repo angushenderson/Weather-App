@@ -18,6 +18,11 @@ class Forecast {
   List<WeekForecastItem> weekForecast; // 8 day weekley forecast
   Analytics analytics; // Temperature analytics for 8 day weekly forecast screen
   List<TwoDayPrecipitation> twoDayPrecipitation; // 2 day rain forecast
+  int pressure; // Current air pressure
+  double uvi; // Current UVI
+  double windSpeed; // Current wind speed
+  int visibility; // Current visibility
+  int timezoneOffset; // Timezone offset of forecast location
 
   Forecast({
     this.temperature,
@@ -34,6 +39,11 @@ class Forecast {
     this.weekForecast,
     this.analytics,
     this.twoDayPrecipitation,
+    this.pressure,
+    this.uvi,
+    this.windSpeed,
+    this.visibility,
+    this.timezoneOffset,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -54,6 +64,7 @@ class Forecast {
           icon: item['weather'][0]['icon'].substring(0, 2),
           precipitation:
               item.containsKey('rain') ? item['rain']['1h'].toDouble() : 0.0,
+          timezoneOffset: json['timezone_offset'],
         ));
       }
     });
@@ -64,6 +75,7 @@ class Forecast {
         RainGraphModel(
           precipitation: item['precipitation'].toDouble(),
           dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
+          timezoneOffset: json['timezone_offset'],
         ),
       );
     });
@@ -75,6 +87,7 @@ class Forecast {
         precipitation: json['forecast']['current'].containsKey('rain')
             ? json['forecast']['current']['rain']['1h']
             : 0,
+        timezoneOffset: json['timezone_offset'],
       )
     ];
     json['forecast']['5_day_3_hour'].forEach(
@@ -85,6 +98,7 @@ class Forecast {
             dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
             precipitation:
                 item.containsKey('rain') ? item['rain']['3h'].toDouble() : 0.0,
+            timezoneOffset: json['timezone_offset'],
           ),
         );
       },
@@ -112,6 +126,7 @@ class Forecast {
         dt: DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000),
         precipitation:
             item.containsKey('rain') ? item['rain']['1h'].toDouble() : 0.0,
+        timezoneOffset: json['timezone_offset'],
       ));
     });
 
@@ -125,14 +140,21 @@ class Forecast {
       dt: json['dt'],
       hourPrecipitation: precipitation,
       fiveDayForecast: fiveDayForecast,
-      sunrise: json['forecast']['current']['sunrise'],
-      sunset: json['forecast']['current']['sunset'],
+      sunrise: DateTime.fromMillisecondsSinceEpoch(
+          json['forecast']['current']['sys']['sunrise'] * 1000),
+      sunset: DateTime.fromMillisecondsSinceEpoch(
+          json['forecast']['current']['sys']['sunset'] * 1000),
       weekForecast: weekForecast,
       analytics: new Analytics(
-        // temperature: json['analytics']['temperature'],
+        temperature: json['analytics']['temperature'],
         precipitation: json['analytics']['precipitation'],
       ),
       twoDayPrecipitation: twoDayPrecipitation,
+      pressure: json['forecast']['current']['main']['pressure'],
+      uvi: json['forecast']['one_call_api']['current']['uvi'].toDouble(),
+      windSpeed: json['forecast']['current']['wind']['speed'].toDouble(),
+      visibility: json['forecast']['current']['visibility'],
+      timezoneOffset: json['timezone_offset'],
     );
   }
 }
@@ -142,8 +164,15 @@ class TwoDayForecast {
   double temperature;
   String icon;
   double precipitation;
+  int timezoneOffset;
 
-  TwoDayForecast({this.dt, this.temperature, this.icon, this.precipitation});
+  TwoDayForecast({
+    this.dt,
+    this.temperature,
+    this.icon,
+    this.precipitation,
+    this.timezoneOffset,
+  });
 }
 
 class WeekForecastItem {
@@ -171,8 +200,9 @@ class WeekForecastItem {
 class TwoDayPrecipitation {
   DateTime dt;
   double precipitation;
+  int timezoneOffset;
 
-  TwoDayPrecipitation({this.dt, this.precipitation});
+  TwoDayPrecipitation({this.dt, this.precipitation, this.timezoneOffset});
 }
 
 class Analytics {

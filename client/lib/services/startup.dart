@@ -26,7 +26,6 @@ Future<Locations> loadLocations() async {
     locations.locations[locations.currentLocationIndex].name = city['name'];
     locations.locations[locations.currentLocationIndex].country =
         city['country'];
-    print(city);
   } else {
     locations.locations[locations.currentLocationIndex].name =
         'Current location';
@@ -34,29 +33,4 @@ Future<Locations> loadLocations() async {
   }
 
   return locations;
-
-  // determinePosition().then((location) {
-  //   lat = location.latitude;
-  //   lon = location.longitude;
-  //   // Load stored locations
-
-  //   getAllLocations().then((locations) async {
-  //     locations.locations.forEach((location) {
-  //       print(location);
-  //     });
-  //     locations.locations[locations.currentLocationIndex].lat = lat;
-  //     locations.locations[locations.currentLocationIndex].lon = lon;
-  //     // Fetch city name
-  //     Map<String, dynamic> city = await fetchCityNameFromServer(lat, lon);
-  //     locations.locations[locations.currentLocationIndex].name = city['name'];
-  //     locations.locations[locations.currentLocationIndex].country =
-  //         city['country'];
-  //     print('RETURNING');
-  //     return locations;
-  //   }).catchError((error) {
-  //     print('Error getting stored locations: ' + error);
-  //   });
-  // }).catchError((error) {
-  //   print('Error determening position: ' + error);
-  // });
 }

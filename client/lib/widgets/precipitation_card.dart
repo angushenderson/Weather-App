@@ -168,11 +168,20 @@ class _PrecipitationLineChartState extends State<PrecipitationLineChart>
           getTitles: (value) {
             switch (value.toInt()) {
               case 0:
-                return DateFormat('HH:mm').format(hourPrecipitation[0].dt);
+                return DateFormat('HH:mm')
+                    .format(hourPrecipitation[0].dt.add(Duration(
+                          seconds: hourPrecipitation[0].timezoneOffset,
+                        )));
               case 10:
-                return DateFormat('HH:mm').format(hourPrecipitation[30].dt);
+                return DateFormat('HH:mm')
+                    .format(hourPrecipitation[30].dt.add(Duration(
+                          seconds: hourPrecipitation[30].timezoneOffset,
+                        )));
               case 20:
-                return DateFormat('HH:mm').format(hourPrecipitation[60].dt);
+                return DateFormat('HH:mm')
+                    .format(hourPrecipitation[60].dt.add(Duration(
+                          seconds: hourPrecipitation[60].timezoneOffset,
+                        )));
             }
             return '';
           },

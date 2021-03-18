@@ -99,7 +99,9 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                         _activeDay = 1;
                         _scrollToIndex(24 -
                             DateTime.fromMillisecondsSinceEpoch(
-                                    forecast[0].dt * 1000)
+                                    (forecast[0].dt +
+                                            forecast[0].timezoneOffset) *
+                                        1000)
                                 .hour);
                       })
                     },
@@ -190,8 +192,9 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
               double pos = controller.position.pixels / 100;
               if (pos >
                       (23 -
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  forecast[0].dt * 1000)
+                          DateTime.fromMillisecondsSinceEpoch((forecast[0].dt +
+                                      forecast[0].timezoneOffset) *
+                                  1000)
                               .hour) &&
                   _activeDay == 0) {
                 setState(() {
@@ -199,8 +202,9 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                 });
               } else if (pos <=
                       (23 -
-                          DateTime.fromMillisecondsSinceEpoch(
-                                  forecast[0].dt * 1000)
+                          DateTime.fromMillisecondsSinceEpoch((forecast[0].dt +
+                                      forecast[0].timezoneOffset) *
+                                  1000)
                               .hour) &&
                   _activeDay == 1) {
                 setState(() {
@@ -219,8 +223,8 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
               itemCount: this.forecast.length,
               itemBuilder: (BuildContext context, int index) {
                 TwoDayForecast f = forecast[index];
-                DateTime dt =
-                    DateTime.fromMicrosecondsSinceEpoch(f.dt * 1000000);
+                DateTime dt = DateTime.fromMicrosecondsSinceEpoch(
+                    (f.dt + f.timezoneOffset) * 1000000);
                 return AutoScrollTag(
                   key: ValueKey(index),
                   controller: controller,

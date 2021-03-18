@@ -157,11 +157,6 @@ class _CitySearchScreenState extends State<CitySearchScreen> {
                     ),
                   )
                 : Container(),
-            // Column(
-            //   children: _locationSuggestions != null
-            //       ? [Text(_locationSuggestions.locations[0].name)]
-            //       : [],
-            // ),
           ],
         ),
       ),

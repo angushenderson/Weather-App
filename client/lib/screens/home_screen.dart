@@ -5,7 +5,9 @@ import 'package:client/screens/air_quality_screen.dart';
 import 'package:client/screens/city_select_screen.dart';
 import 'package:client/services/startup.dart';
 import 'package:client/widgets/daily_temperature_scroller.dart';
+import 'package:client/widgets/forecast_info_card.dart';
 import 'package:client/widgets/precipitation_card.dart';
+import 'package:client/widgets/sunrise_sunset.dart';
 import 'package:client/widgets/temperature_trend_card.dart';
 import 'package:flutter/material.dart';
 import 'package:client/server/forecast.dart';
@@ -19,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Locations _locations;
   bool error = false;
+  String errorText;
   final controller = PageController();
   TabController _tabController;
 
@@ -31,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       setState(() {
         error = true;
+        errorText = e.toString();
       });
     }
   }
@@ -71,19 +75,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _tabController,
                 children: tabContent,
               )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Container(height: 8.0),
-                    Text(
-                      'Fetching locations...',
-                      style: Theme.of(context).textTheme.headline2,
+            : !error
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        Container(height: 8.0),
+                        Text(
+                          'Fetching locations...',
+                          style: Theme.of(context).textTheme.headline2,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  )
+                : Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Failed to fetch locations',
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              errorText +
+                                  '\nIt\'s likely the server isn\'t running or you have a poor internet connection.',
+                              style: Theme.of(context).textTheme.headline6,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          FlatButton(
+                            color: Theme.of(context).primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'Try again',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                error = false;
+                                errorText = '';
+                              });
+                              startup();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
       ),
     );
   }
@@ -103,6 +150,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   Location location;
   Forecast forecast;
   bool error = false;
+  String errorText;
   final GlobalKey<_UpdateTimeState> refreshTimeStateKey =
       GlobalKey<_UpdateTimeState>();
 
@@ -124,6 +172,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
       print(e);
       setState(() {
         error = true;
+        errorText = e.toString();
       });
     }
   }
@@ -272,14 +321,14 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                             ),
                             GestureDetector(
                               onTap: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => AirQualityScreen(
-                                      forecast: forecast,
-                                    ),
-                                  ),
-                                )
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (_) => AirQualityScreen(
+                                //       forecast: forecast,
+                                //     ),
+                                //   ),
+                                // )
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -420,6 +469,8 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                     forecast.twoDayForecast, forecast, location),
                 TemperatureCard(forecast.fiveDayForecast),
                 PrecipitationCard(forecast.hourPrecipitation, forecast),
+                ForecastInfoCard(forecast),
+                SunriseSunset(forecast),
               ],
             ),
           )
@@ -438,17 +489,45 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                 ),
               )
             : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        'An error occured whilst fetching the forecast',
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Failed to fetch forecast',
                         style: Theme.of(context).textTheme.headline2,
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          errorText +
+                              '\nIt\'s likely the server isn\'t running or you have a poor internet connection.',
+                          style: Theme.of(context).textTheme.headline6,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      FlatButton(
+                        color: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Try again',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            error = false;
+                            errorText = '';
+                          });
+                          fetchForecast();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
   }

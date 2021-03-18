@@ -72,7 +72,6 @@ void addLocation(Location location, {appendToExistingValues = true}) async {
   }
   // Add new location
   locations.locations.add(location);
-  print(locations.locations.length);
   List<String> locationNames = [];
   List<String> locationLats = [];
   List<String> locationLons = [];
@@ -86,9 +85,37 @@ void addLocation(Location location, {appendToExistingValues = true}) async {
     locationCountries.add(locations.locations[i].country);
   }
 
-  print(locationNames);
   prefs.setStringList('locationNames', locationNames);
   prefs.setStringList('locationsLats', locationLats);
   prefs.setStringList('locationLons', locationLons);
   prefs.setStringList('locationCountries', locationCountries);
+}
+
+void updateAllLocations(Locations locations) async {
+  // Change all locations
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  List<String> locationNames = [];
+  List<String> locationLats = [];
+  List<String> locationLons = [];
+  List<String> locationCountries = [];
+
+  // Format for rewrite
+  for (int i = 0; i < locations.locations.length; i++) {
+    locationNames.add(locations.locations[i].name);
+    locationLats.add(locations.locations[i].lat.toString());
+    locationLons.add(locations.locations[i].lon.toString());
+    locationCountries.add(locations.locations[i].country);
+  }
+
+  prefs.setStringList('locationNames', locationNames);
+  prefs.setStringList('locationsLats', locationLats);
+  prefs.setStringList('locationLons', locationLons);
+  prefs.setStringList('locationCountries', locationCountries);
+}
+
+void updateCurrentLocationIndex(int index) async {
+  // index: locations.currentLocationIndex
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setInt('currentLocationIndex', index);
 }

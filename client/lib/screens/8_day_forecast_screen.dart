@@ -498,7 +498,7 @@ class EightDayForecastScreen extends StatelessWidget {
                                 style: Theme.of(context).textTheme.headline6,
                               ),
                               Text(
-                                'TEMPERATURE ANALYTICS',
+                                forecast.analytics.temperature,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
