@@ -26,17 +26,25 @@ class _HomeScreenState extends State<HomeScreen> {
   TabController _tabController;
 
   void fetchLocations() async {
-    try {
-      var result = await loadLocations();
-      setState(() {
-        _locations = result;
-      });
-    } catch (e) {
-      setState(() {
-        error = true;
-        errorText = e.toString();
-      });
-    }
+    print('Fetching');
+    var result = await loadLocations();
+    print('Fetched');
+    setState(() {
+      _locations = result;
+    });
+    // try {
+    //   print('Fetching');
+    //   var result = await loadLocations();
+    //   print('Fetched');
+    //   setState(() {
+    //     _locations = result;
+    //   });
+    // } catch (e) {
+    //   setState(() {
+    //     error = true;
+    //     errorText = e.toString();
+    //   });
+    // }
   }
 
   void startup() async {
@@ -65,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         tabContent.add(HomeScreenContent(location));
       });
     }
-
+    print('BUILDING');
     return DefaultTabController(
       length: _locations != null ? _locations.locations.length : 0,
       child: Scaffold(

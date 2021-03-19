@@ -15,9 +15,20 @@ Future<Locations> loadLocations() async {
   lon = position.longitude;
 
   // Get all stored locations
+
+  print('Fetching stored locations');
   var locations = await getAllLocations();
-  locations.locations[locations.currentLocationIndex].lat = lat;
-  locations.locations[locations.currentLocationIndex].lon = lon;
+
+  if (locations.locations.length > 0) {
+    locations.locations[locations.currentLocationIndex].lat = lat;
+    locations.locations[locations.currentLocationIndex].lon = lon;
+  } else {
+    // First time running
+    locations.locations.add(Location(
+      lat: lat,
+      lon: lon,
+    ));
+  }
 
   // Get current location name from API request
   print('Determening city name');
@@ -31,6 +42,8 @@ Future<Locations> loadLocations() async {
         'Current location';
     locations.locations[locations.currentLocationIndex].country = '';
   }
+  // Just update all fetched locations for safety
+  updateAllLocations(locations);
 
   return locations;
 }

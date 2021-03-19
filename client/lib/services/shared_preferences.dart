@@ -49,17 +49,27 @@ Future<Locations> getAllLocations() async {
     prefs.setInt('currentLocationIndex', 0);
   }
 
+  if (currentLocationIndex == null) {
+    // Fix startup bug
+    currentLocationIndex = 0;
+  }
+
   Locations locations =
       Locations(locations: [], currentLocationIndex: currentLocationIndex);
-  for (int i = 0; i < locationNames.length; i++) {
-    locations.locations.add(Location(
-      name: locationNames[i],
-      lat: double.parse(locationLats[i]),
-      lon: double.parse(locationLons[i]),
-      country: locationCountries[i],
-    ));
+
+  if (locationNames != null) {
+    for (int i = 0; i < locationNames.length; i++) {
+      locations.locations.add(Location(
+        name: locationNames[i],
+        lat: double.parse(locationLats[i]),
+        lon: double.parse(locationLons[i]),
+        country: locationCountries[i],
+      ));
+    }
+    return locations;
+  } else {
+    return locations;
   }
-  return locations;
 }
 
 void addLocation(Location location, {appendToExistingValues = true}) async {
