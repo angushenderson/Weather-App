@@ -292,7 +292,12 @@ class Location:
         response = requests.get(
             f"https://api.openweathermap.org/geo/1.0/reverse?lat={lat}&lon={lon}&appid={self.API_KEY}")
         if response.status_code == 200:
-            return response.json()
+            j = response.json()
+            # Convert iso3166 country code to country name
+            for i in range(len(j)):
+                j[i]['country'] = coco.convert(
+                    names=j[i]['country'], to='name_short', not_found=None)
+            return j
         else:
             raise ConnectionError(
                 f"Failed to reach API: {response.status_code} status code returned.")
