@@ -49,3 +49,6 @@ server/API/.env
 
 # Pycache
 server/API/__pycache__
+
+# Client side .env file
+client/.env

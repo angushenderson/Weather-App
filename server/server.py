@@ -17,7 +17,6 @@ class Forecast(Resource):
     def get(self, lat, lon):
         location = open_weather.Location(coords=(lat, lon))
         forecast = open_weather.Forecast(location)
-        print(forecast)
         return jsonify(forecast.forecast)
 
 
@@ -29,10 +28,8 @@ class LocationNameSearch(Resource):
     def get(self, city):
         location = open_weather.Location()
         suggested_names = location.search_suggestions(city)
-        print(suggested_names)
         names = [n['name'] for n in suggested_names]
         location_names = location.name_search(max(set(names), key=names.count))
-        print(location_names)
         return jsonify({'locations': location_names})
 
 
