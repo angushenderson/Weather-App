@@ -8,4 +8,4 @@ Project still under development... Full documentation to follow. Stay tuned!
 
 ## Acknowledgments
 
-* The brilliant UI design by HUA on Dribble (https://dribbble.com/tyronehua)
+* The brilliant UI design by HUA on Dribbble (https://dribbble.com/tyronehua)
