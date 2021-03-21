@@ -26,25 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   TabController _tabController;
 
   void fetchLocations() async {
-    print('Fetching');
-    var result = await loadLocations();
-    print('Fetched');
-    setState(() {
-      _locations = result;
-    });
-    // try {
-    //   print('Fetching');
-    //   var result = await loadLocations();
-    //   print('Fetched');
-    //   setState(() {
-    //     _locations = result;
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     error = true;
-    //     errorText = e.toString();
-    //   });
-    // }
+    try {
+      var result = await loadLocations();
+      setState(() {
+        _locations = result;
+      });
+    } catch (e) {
+      setState(() {
+        error = true;
+        errorText = e.toString();
+      });
+    }
   }
 
   void startup() async {

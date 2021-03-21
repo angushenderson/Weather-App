@@ -279,13 +279,10 @@ class _DailyTemperatureScrollerState extends State<DailyTemperatureScroller> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            Positioned(
-                              bottom: 10,
-                              child: Image(
-                                width: 42.0,
-                                image: AssetImage(
-                                  'lib/assets/images/${f.icon}.png',
-                                ),
+                            Image(
+                              width: 42.0,
+                              image: AssetImage(
+                                'lib/assets/images/${f.icon}.png',
                               ),
                             ),
                             Text(
