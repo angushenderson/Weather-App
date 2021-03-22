@@ -55,7 +55,7 @@ class ForecastAnalytics:
                 precipitation_volumes) if value), None)
             # Create nicely formatted string - when will it next rain
             if next_rain:
-                return f"Expect rain {'in ' + str(next_rain) + (' days' if next_rain != 1 else ' day') if next_rain > 1 else ' tomorrow'}"
+                return f"Expect rain {'in ' + str(next_rain) + (' days' if next_rain != 1 else ' day') if next_rain > 1 else 'tomorrow'}"
             else:
                 # No rain all week
                 return 'No rain is expected this week!'
