@@ -1,9 +1,14 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, request
 from flask_restful import Resource, Api
 from json import dumps
 from flask_jsonpify import jsonify
 from API import open_weather
 
+
+# Load env file
+load_dotenv()
 
 app = Flask(__name__)
 api = Api(app)
@@ -51,4 +56,6 @@ api.add_resource(CityFromCoords, '/city/<string:lat>/<string:lon>')
 print(app.url_map)
 
 if __name__ == '__main__':
-    app.run(host='192.168.1.104', debug=True)
+    app.run(host=os.getenv('SERVER_ADDRESS'),
+            port=os.getenv('SERVER_PORT'),
+            debug=True)
