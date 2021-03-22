@@ -8,11 +8,11 @@ from .forecast_analytics import ForecastAnalytics
 
 
 # Load env file
-load_dotenv()
+load_dotenv('../.env')
 # Create country code converter instance
 cc = coco.CountryConverter()
 # Open city list file
-location_data = json.load(open('server/API/city_list.json', 'r'))
+location_data = json.load(open('API/city_list.json', 'r'))
 
 
 class Forecast:

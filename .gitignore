@@ -44,8 +44,8 @@ client/app.*.map.json
 server/API/city.json
 server/API/write_file.py
 
-# Hide API key
-server/API/.env
+# Hide server .env file
+server/.env
 
 # Pycache
 server/API/__pycache__
