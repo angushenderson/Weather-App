@@ -6,15 +6,15 @@ Full stack mobile weather app created with a Flutter front end and Python Flask 
 
 ### Home screen
 
-<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/HomeScreen.jpg?raw=true" width="250" />
+<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/HomeScreen.jpg?raw=true" width="400" />
 
 ### Weekly forecast screen
 
-<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/WeeklyForecastScreen.jpg?raw=true" width="250" />
+<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/WeeklyForecastScreen.jpg?raw=true" width="400" />
 
 ### Forecast graphs
 
-<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/AmazingGraphs.jpg?raw=true" width="250" />
+<img src="https://github.com/angushenderson/Weather-App/blob/main/README_images/AmazingGraphs.jpg?raw=true" width="400" />
 
 If you wish to try the app out for yourself, follow the [Getting Started guide](#getting-started) below.
 
