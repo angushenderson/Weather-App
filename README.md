@@ -2,6 +2,22 @@
 
 Full stack mobile weather app created with a Flutter front end and Python Flask backend, fetching forecast data from the [OpenWeatherMap API](https://openweathermap.org/api) and air quality data from [WeatherBit](https://www.weatherbit.io/api). I've never found a Weather App that I've liked, so I decided to create my own!
 
+## Screenshots
+
+### Home screen
+
+![Home Screen](https://github.com/angushenderson/Weather-App/README_images/HomeScreen.jpg)
+
+### Weekly forecast screen
+
+![Weekly Forecast Screen](https://github.com/angushenderson/Weather-App/README_images/WeeklyForecastScreen.jpg)
+
+### Forecast Graphs
+
+![Forecast Graphs](https://github.com/angushenderson/Weather-App/README_images/AmazingGraphs.jpg)
+
+If you wish to try the app out for yourself, follow the [Getting Started guide](#getting-started) below.
+
 ## Getting Started
 
 There are 2 parts to this project, the client application and the Flask server, so the setup will be split in 2 parts to cover each.
