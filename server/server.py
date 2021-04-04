@@ -58,4 +58,4 @@ print(app.url_map)
 if __name__ == '__main__':
     app.run(host=os.getenv('SERVER_ADDRESS'),
             port=os.getenv('SERVER_PORT'),
-            debug=True)
+            debug=False)
