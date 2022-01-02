@@ -33,9 +33,9 @@ class LocationNameSearch(Resource):
     def get(self, city):
         location = open_weather.Location()
         suggested_names = location.search_suggestions(city)
-        names = [n['name'] for n in suggested_names]
+        names = [n["name"] for n in suggested_names]
         location_names = location.name_search(max(set(names), key=names.count))
-        return jsonify({'locations': location_names})
+        return jsonify({"locations": location_names})
 
 
 class CityFromCoords(Resource):
@@ -46,16 +46,18 @@ class CityFromCoords(Resource):
     def get(self, lat, lon):
         location = open_weather.Location()
         city = location.get_city_name(lat, lon)
-        return jsonify({'locations': city})
+        return jsonify({"locations": city})
 
 
-api.add_resource(Forecast, '/forecast/<string:lat>/<string:lon>')
-api.add_resource(LocationNameSearch, '/search-suggestions/<string:city>')
-api.add_resource(CityFromCoords, '/city/<string:lat>/<string:lon>')
+api.add_resource(Forecast, "/forecast/<string:lat>/<string:lon>")
+api.add_resource(LocationNameSearch, "/search-suggestions/<string:city>")
+api.add_resource(CityFromCoords, "/city/<string:lat>/<string:lon>")
 
 print(app.url_map)
 
-if __name__ == '__main__':
-    app.run(host=os.getenv('SERVER_ADDRESS'),
-            port=os.getenv('SERVER_PORT'),
-            debug=True)
+if __name__ == "__main__":
+    app.run(
+        host=os.getenv("SERVER_ADDRESS"),
+        port=os.getenv("SERVER_PORT"),
+        debug=os.getenv("DEVELOPMENT_MODE", True),
+    )

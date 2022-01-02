@@ -133,7 +133,7 @@ class Forecast {
     return Forecast(
       temperature: json['forecast']['current']['main']['temp'].toDouble(),
       feelsLike: json['forecast']['current']['main']['feels_like'].toDouble(),
-      aqi: json['forecast']['air_pollution']['aqi'],
+      aqi: json['forecast']['air_pollution'][0]['main']['aqi'],
       description: description,
       icon: json['forecast']['current']['weather'][0]['icon'].substring(0, 2),
       twoDayForecast: twoDayForecast,
