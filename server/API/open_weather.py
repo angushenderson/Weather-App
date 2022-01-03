@@ -20,20 +20,15 @@ class Forecast:
     A wrapper object for the OpenWeatherMap API
     """
 
-    def __init__(
-        self, location: object, units="metric", use_weather_bit_aqi_data=False
-    ) -> None:
+    def __init__(self, location: object, units="metric") -> None:
         """
         :param location Location object: Location object of location
         :param units str: Units for API responses, acceptable units include: ['metric', 'imperial', 'standard']
-        :param use_weather_bit_aqi_data bool: Fetch more detailed air quality data from https://www.weatherbit.io/ rather than OpenWeatherMap
-                                    (Will respond with different format API response). Use for far more accurate AQI data.
         """
         self.API_KEY = os.getenv("OPEN_WEATHER_API_KEY")
         self.WEATHER_BIT_API_KEY = os.getenv("WEATHER_BIT_API_KEY")
         self.location = location
         self.units = units
-        self.use_weather_bit_aqi_data = use_weather_bit_aqi_data
         self.analytics = ForecastAnalytics(self)
 
     def __repr__(self):
@@ -133,20 +128,12 @@ class Forecast:
         """
         Get the current air pollution reading and breakdown of gases in atmosphere in current location
         """
-        if self.use_weather_bit_aqi_data:
-            self._get_json(
-                "_current_air_pollution",
-                f"https://api.weatherbit.io/v2.0/current/airquality?lat={self.location.coords[0]}&lon={self.location.coords[1]}&key={self.WEATHER_BIT_API_KEY}",
-                use_cache=True,
-            )
-            return self._current_air_pollution["data"][0]
-        else:
-            self._get_json(
-                "_current_air_pollution",
-                f"https://api.openweathermap.org/data/2.5/air_pollution?lat={self.location.coords[0]}&lon={self.location.coords[1]}&appid={self.API_KEY}&units={self.units}",
-                use_cache=True,
-            )
-            return self._current_air_pollution["list"]
+        self._get_json(
+            "_current_air_pollution",
+            f"https://api.openweathermap.org/data/2.5/air_pollution?lat={self.location.coords[0]}&lon={self.location.coords[1]}&appid={self.API_KEY}&units={self.units}",
+            use_cache=True,
+        )
+        return self._current_air_pollution["list"]
 
     @current_air_pollution.setter
     def current_air_pollution(self):
