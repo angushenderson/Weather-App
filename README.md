@@ -42,7 +42,7 @@ If you're interested in my design approach please read the [server design ration
 
   - By default the `SERVER_PORT` environment variable is set to 8080. This is the default for Flask, however if this port is already in use on your system, feel free to change it, just make sure to take note of it for when we set up our frontend.
 
-- With all our configurations configured we can run the server! In your console or terminal, make sure you are in the server folder (`Weather-App/server`), then run `python server.py`. This runs the Flask development server. I could have created a deployment server to improve security, speed and scalability however this was just a fun personal project so I have no real need or desire for any of those things at the moment. Flask does have a production ready server tho, so feel free to check it out and set it up if you want to.
+- With all our configurations configured we can run the server! In your console or terminal, make sure you are in the server folder (`Weather-App/server`), then run `python server.py`. This runs the Flask development server. I could have created a deployment server to improve security, speed and scalability however this was just a fun personal project so I have no real need or desire for any of those things at the moment. Flask does have a production ready server though, so feel free to check it out and set it up if you want to.
 
 ### Client setup
 
